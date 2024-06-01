@@ -19,7 +19,7 @@ const Header = () => {
           />
           <FaSearch className="text-slate-500" />
         </form>
-        <ul className="flex gap-1 sm:gap-4 items-center">
+        <ul className="flex  sm:gap-4 items-center">
           <Link to={"/"}>
             <li className="capitalize hidden sm:inline hover:underline cursor-pointer">
               Home
