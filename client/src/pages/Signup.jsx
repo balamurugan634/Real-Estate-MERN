@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,Navigate,useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setformData] = useState({});
   const [load, setLoad] = useState(false);
   const [error,setError]=useState(null)
+  const navigate=new useNavigate()
   function handleChange(e) {
     setformData({
       ...formData,
       [e.target.id]: e.target.value,
     });
-    // console.log(formData);
+    console.log(formData);
   }
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,6 +32,7 @@ const SignUp = () => {
         return;
       }
         setLoad(false)
+        navigate('/signin')
       }
       catch{(err) => {
         setLoad(false);
