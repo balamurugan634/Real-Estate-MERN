@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { SigninSuccess,Signinfailure,Signinstart } from '../redux/user/userSlice'
+import GoogleAuth from '../components/GoogleAuth'
 const SignIn = () => {
   const [logdata,setLogdata]=useState({})
   const {load,error}=useSelector((state)=>state.user)
@@ -50,7 +51,6 @@ async function handleSubmit(e){
         <input
           type="email"
           placeholder="email"
-          required
           className="bg-slate-100 p-3 rounded-lg outline-none border"
           id="email"
           onChange={handleChange}
@@ -58,7 +58,6 @@ async function handleSubmit(e){
         <input
           type="password"
           placeholder="password"
-          required
           className="bg-slate-100 p-3 rounded-lg outline-none border"
           id="password"
           onChange={handleChange}
@@ -71,6 +70,7 @@ async function handleSubmit(e){
           {load ? "Loading.." : "login"}
           
         </button>
+        <GoogleAuth />
       </form>
       <p className="my-4">
         Don't have an account ?

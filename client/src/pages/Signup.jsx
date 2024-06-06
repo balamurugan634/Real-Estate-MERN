@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link,Navigate,useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import GoogleAuth from "../components/GoogleAuth";
 
 const SignUp = () => {
   const [formData, setformData] = useState({});
   const [load, setLoad] = useState(false);
-  const [error,setError]=useState(null)
-  const navigate=new useNavigate()
+  const [error, setError] = useState(null);
+  const navigate = new useNavigate();
   function handleChange(e) {
     setformData({
       ...formData,
@@ -15,7 +16,7 @@ const SignUp = () => {
   }
   async function handleSubmit(e) {
     e.preventDefault();
-   
+
     try {
       setLoad(true);
       const res = await fetch("/api/auth/signup", {
@@ -24,20 +25,21 @@ const SignUp = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      })
+      });
       const data = await res.json();
-      if(data.success===false){
-        setError(data.message)
+      if (data.success === false) {
+        setError(data.message);
         setLoad(false);
         return;
       }
-        setLoad(false)
-        navigate('/signin')
-      }
-      catch{(err) => {
+      setLoad(false);
+      navigate("/signin");
+    } catch {
+      (err) => {
         setLoad(false);
-        setError(err.message)
-      }};
+        setError(err.message);
+      };
+    }
   }
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -48,7 +50,6 @@ const SignUp = () => {
         <input
           type="text"
           placeholder="username"
-          required
           className="bg-slate-100 p-3 rounded-lg outline-none border"
           id="name"
           onChange={handleChange}
@@ -56,7 +57,6 @@ const SignUp = () => {
         <input
           type="email"
           placeholder="email"
-          required
           className="bg-slate-100 p-3 rounded-lg outline-none border"
           id="email"
           onChange={handleChange}
@@ -64,7 +64,6 @@ const SignUp = () => {
         <input
           type="password"
           placeholder="password"
-          required
           className="bg-slate-100 p-3 rounded-lg outline-none border"
           id="password"
           onChange={handleChange}
@@ -76,6 +75,7 @@ const SignUp = () => {
         >
           {load ? "Loading.." : "Register"}
         </button>
+        <GoogleAuth />
       </form>
       <p className="my-4">
         already have an account ?{" "}
