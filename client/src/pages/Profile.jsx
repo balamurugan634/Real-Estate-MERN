@@ -1,32 +1,45 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { Updatefailure,Updatestart,Updatesuccess } from "../redux/user/userSlice.js";
 import { app } from "../firebase.js";
 const Profile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser} = useSelector((state) => state.user);
+  const {load,error}=useSelector((state)=>state.user)
+
   const fileref = useRef(null);
   const [file, setFile] = useState(undefined);
   const [fileProgress, setFileProgress] = useState(null);
   const [file_error, setfile_error] = useState(false);
   const [formdata, setformdata] = useState({});
-  console.log(fileProgress);
-  console.log(formdata);
+  const [updatestatus,setUpdatestatus]=useState(false)
+  // console.log(load)
+  const dispatch=useDispatch()
+  // console.log(fileProgress);
+  // console.log(formdata);
+  // console.log(currentUser)
 
   useEffect(() => {
     if (file) {
       handleFile(file);
     }
   }, [file]);
+  function handleChange(e){
+    setformdata({...formdata,
+      [e.target.id]:e.target.value
+    })
+    // console.log(formdata)
+  }
   function handleFile(file) {
     const storage = getStorage(app);
     const filename = new Date().getTime() + file.name;
     const storageref = ref(storage, filename);
-    console.log(filename);
+    // console.log(filename);
     const uploadtask = uploadBytesResumable(storageref, file);
 
     uploadtask.on(
@@ -46,17 +59,40 @@ const Profile = () => {
       }
     );
   }
+  async function handleUpdate(e){
+    e.preventDefault()
+    try{
+        dispatch(Updatestart())
+        const res=await fetch(`/api/user/update/${currentUser._id}`,{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+          },
+          body:JSON.stringify(formdata)
+        })
+        const data=await res.json()
+        if(data.success===false){
+            dispatch(Updatefailure(data.message))
+            return
+        }
+        dispatch(Updatesuccess(data))
+        setUpdatestatus(true)
+    }
+    catch(error){
+      dispatch(Updatefailure(error.message))
+    }
+  }
 
   return (
     <div className="p-5 max-w-lg  mx-auto">
       <h1 className="text-center text-3xl sm:text-4xl font-semibold uppercase">
         Profile
       </h1>
-      <form action="" className="flex flex-col p-3 gap-3 ">
+      <form onSubmit={handleUpdate} className="flex flex-col p-3 gap-3 ">
         <input
           type="file"
           name=""
-          id=""
+          id="pic"
           ref={fileref}
           onChange={(e) => setFile(e.target.files[0])}
           hidden
@@ -82,29 +118,40 @@ const Profile = () => {
         <input
           type="text"
           placeholder="username"
-          id="username"
+          id="name"
+          defaultValue={currentUser.name}
           className="bg-slate-200 p-2 rounded-lg"
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="email"
-          id="usermail"
+          id="email"
+          defaultValue={currentUser.email}
           className="bg-slate-200 p-2 rounded-lg"
+          onChange={handleChange}
+
         />
         <input
           type="text"
           placeholder="password"
-          id="userpass"
+          id="password"
+          defaultValue={currentUser.password}
+          onChange={handleChange}
+
           className="bg-slate-200 p-2 rounded-lg"
         />
-        <button className="bg-green-900 shadow-lg capitalize font-semibold cursor-pointer p-3 rounded-lg text-white hover:opacity-95 disabled:bg-slate-400">
-          update
+        <button  disabled={load} className="bg-green-900 shadow-lg capitalize font-semibold cursor-pointer p-3 rounded-lg text-white hover:opacity-95 disabled:bg-slate-400">
+          {load ? "Loading...." :"update"}
         </button>
       </form>
       <div className="flex justify-between p-3">
         <span className="text-red-500">Delete account</span>
         <span className="text-red-500">Sign out</span>
       </div>
+      <p>{error ? error :''}</p>
+      <p>{updatestatus  ? 'user updated successfully' :''}</p>
+
     </div>
     // allow read;
     // allow write:if
