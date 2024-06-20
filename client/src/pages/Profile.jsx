@@ -6,20 +6,30 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { Updatefailure,Updatestart,Updatesuccess } from "../redux/user/userSlice.js";
+import {
+  Updatefailure,
+  Updatestart,
+  Updatesuccess,
+  DeleteUserfailure,
+  DeleteUserstart,
+  DeleteUsersuccess,
+  SignoutUserfailure,
+  SignoutUserstart,
+  SignoutUsersuccess,
+} from "../redux/user/userSlice.js";
 import { app } from "../firebase.js";
 const Profile = () => {
-  const { currentUser} = useSelector((state) => state.user);
-  const {load,error}=useSelector((state)=>state.user)
+  const { currentUser } = useSelector((state) => state.user);
+  const { load, error } = useSelector((state) => state.user);
 
   const fileref = useRef(null);
   const [file, setFile] = useState(undefined);
   const [fileProgress, setFileProgress] = useState(null);
   const [file_error, setfile_error] = useState(false);
   const [formdata, setformdata] = useState({});
-  const [updatestatus,setUpdatestatus]=useState(false)
+  const [updatestatus, setUpdatestatus] = useState(false);
   // console.log(load)
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   // console.log(fileProgress);
   // console.log(formdata);
   // console.log(currentUser)
@@ -29,10 +39,8 @@ const Profile = () => {
       handleFile(file);
     }
   }, [file]);
-  function handleChange(e){
-    setformdata({...formdata,
-      [e.target.id]:e.target.value
-    })
+  function handleChange(e) {
+    setformdata({ ...formdata, [e.target.id]: e.target.value });
     // console.log(formdata)
   }
   function handleFile(file) {
@@ -59,27 +67,59 @@ const Profile = () => {
       }
     );
   }
-  async function handleUpdate(e){
-    e.preventDefault()
-    try{
-        dispatch(Updatestart())
-        const res=await fetch(`/api/user/update/${currentUser._id}`,{
-          method:'POST',
-          headers:{
-            'Content-Type':'application/json',
-          },
-          body:JSON.stringify(formdata)
-        })
-        const data=await res.json()
-        if(data.success===false){
-            dispatch(Updatefailure(data.message))
-            return
-        }
-        dispatch(Updatesuccess(data))
-        setUpdatestatus(true)
+  async function handleUpdate(e) {
+    e.preventDefault();
+    try {
+      dispatch(Updatestart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formdata),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(Updatefailure(data.message));
+        return;
+      }
+      dispatch(Updatesuccess(data));
+      setUpdatestatus(true);
+    } catch (error) {
+      dispatch(Updatefailure(error.message));
     }
-    catch(error){
-      dispatch(Updatefailure(error.message))
+  }
+  async function handleDelete() {
+    try {
+      dispatch(DeleteUserstart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(DeleteUserfailure(data.message));
+        return;
+      }
+      dispatch(DeleteUsersuccess(data));
+    } catch (error) {
+      dispatch(DeleteUserfailure(data.message));
+    }
+  }
+  async function handleSignout() {
+    try {
+      dispatch(SignoutUserstart());
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(SignoutUserfailure(data.message));
+        return;
+      }
+      dispatch(SignoutUsersuccess(data));
+    } catch (error) {
+      dispatch(SignoutUserfailure(data.message));
     }
   }
 
@@ -108,9 +148,17 @@ const Profile = () => {
           {file_error ? (
             <span className="text-red-500">Error in image upload</span>
           ) : fileProgress > 0 && fileProgress < 100 ? (
-            <span className={fileProgress < 50 ?"text-slate-500":"text-green-700"}>uploading...{fileProgress} %</span>
+            <span
+              className={
+                fileProgress < 50 ? "text-slate-500" : "text-green-700"
+              }
+            >
+              uploading...{fileProgress} %
+            </span>
           ) : fileProgress === 100 ? (
-            <span className="text-green-700 font-semibold">uploaded successfully</span>
+            <span className="text-green-700 font-semibold">
+              uploaded successfully
+            </span>
           ) : (
             ""
           )}
@@ -130,7 +178,6 @@ const Profile = () => {
           defaultValue={currentUser.email}
           className="bg-slate-200 p-2 rounded-lg"
           onChange={handleChange}
-
         />
         <input
           type="text"
@@ -138,20 +185,34 @@ const Profile = () => {
           id="password"
           defaultValue={currentUser.password}
           onChange={handleChange}
-
           className="bg-slate-200 p-2 rounded-lg"
         />
-        <button  disabled={load} className="bg-green-900 shadow-lg capitalize font-semibold cursor-pointer p-3 rounded-lg text-white hover:opacity-95 disabled:bg-slate-400">
-          {load ? "Loading...." :"update"}
+        <button
+          disabled={load}
+          className="bg-green-900 shadow-lg capitalize font-semibold cursor-pointer p-3 rounded-lg text-white hover:opacity-95 disabled:bg-slate-400"
+        >
+          {load ? "Loading...." : "update"}
         </button>
       </form>
       <div className="flex justify-between p-3">
-        <span className="text-red-500">Delete account</span>
-        <span className="text-red-500">Sign out</span>
+        <span
+          className="text-red-500 hover:cursor-pointer"
+          onClick={handleDelete}
+        >
+          Delete account
+        </span>
+        <span
+          className="text-red-500 hover:cursor-pointer"
+          onClick={handleSignout}
+        >
+          Sign out
+        </span>
       </div>
-      <p>{error ? error :''}</p>
-      <p>{updatestatus  ? 'user updated successfully' :''}</p>
-
+      <p className="text-red-900 text-center">{error ? error : ""}</p>
+      <p className="text-green-900 text-center">
+        {updatestatus ? "user updated successfully" : ""}
+      </p>
+      {/* <p>{DeleteUserfailure  ? 'user updated successfully' :''}</p> */}
     </div>
     // allow read;
     // allow write:if
