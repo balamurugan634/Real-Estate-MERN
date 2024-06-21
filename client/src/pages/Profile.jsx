@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -110,7 +111,7 @@ const Profile = () => {
       dispatch(SignoutUserstart());
       const res = await fetch("/api/user/signout", {
         method: "POST",
-        credentials: 'include',
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false) {
@@ -193,6 +194,12 @@ const Profile = () => {
         >
           {load ? "Loading...." : "update"}
         </button>
+        <Link
+          to={"/createlist"}
+          className="bg-blue-600 p-3 text-center rounded-lg text-white font-semibold hover:opacity-95"
+        >
+          Create listing
+        </Link>
       </form>
       <div className="flex justify-between p-3">
         <span
