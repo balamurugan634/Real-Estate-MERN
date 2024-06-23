@@ -9,6 +9,7 @@ import SignUp from "./pages/Signup";
 import PrivateRoute from "./components/PrivateRoute";
 import Createlist from "./pages/Createlist";
 import Updatelist from "./pages/updatelist";
+import Listing from "./pages/Listing";
 const App = () => {
   return (
     <BrowserRouter>
@@ -17,10 +18,13 @@ const App = () => {
         <Route  path="/" element={<Home/>}/>
         <Route path="/signin" element={<SignIn/>} />
         <Route  path="/signup" element={<SignUp/>}/>
+        <Route path="/listing/:id" element={<Listing/>}></Route>
+
         <Route element={<PrivateRoute/>}>
           <Route  path="/profile" element={<Profile/>}/>
           <Route path="/createlist" element={<Createlist/>}></Route>
           <Route path="/updatelist/:id" element={<Updatelist/>}></Route>
+
 
         </Route>
         <Route  path="/about" element={<About/>}/>

@@ -261,7 +261,7 @@ const Profile = () => {
       <button type="button" className="text-green-800 text-center mx-auto flex" onClick={handleShowlisting}>Show listings </button>
       {showlist && userlisting.length >0 && userlisting.map((list)=>
         <div className="flex justify-between items-center gap-3 my-2" key={list._id}>
-          <Link to={`/updatelist/${list._id}`}><img src={list.imageUrl[0]} className='w-20 h-20 object-contain' alt="listimage" srcset="" /></Link>
+          <Link to={`/listing/${list._id}`}><img src={list.imageUrl[0]} className='w-20 h-20 object-contain' alt="listimage" srcset="" /></Link>
           <p className="font-semibold">{list.name}</p>
           <div className="flex flex-col">
               <button type="button" onClick={()=>handlelistdelete(list._id)} className="text-red-700">DELETE</button>
