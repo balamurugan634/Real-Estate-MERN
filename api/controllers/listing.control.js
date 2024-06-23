@@ -22,3 +22,14 @@ export const showListing=async (req,res,next)=>{
         next(errorHandler(401,"unauthorized"))
     }
 }
+export const delListing=async (req,res,next)=>{
+    const listing=await Listing.findById(req.params.id)
+    if(!listing){return next(errorHandler(401,"listing not fouund"))}
+    if(req.user.id !== listing.userRef){return next(errorHandler(401,'unauthorized'))}
+    try {
+        await Listing.findByIdAndDelete(req.params.id)
+        res.status(200).json("deleted successfully")
+    } catch (error) {
+        next(error)
+    }
+}

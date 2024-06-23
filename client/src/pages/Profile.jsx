@@ -31,6 +31,9 @@ const Profile = () => {
   const [updatestatus, setUpdatestatus] = useState(false);
   // console.log(load)
   const dispatch = useDispatch();
+  const [shlisterror,setshlisterror]=useState(false)
+  const [userlisting,setuserlisting]=useState([])
+  const [showlist,setshowlist]=useState(false)
   // console.log(fileProgress);
   // console.log(formdata);
   // console.log(currentUser)
@@ -124,6 +127,42 @@ const Profile = () => {
     }
   }
 
+  async function handleShowlisting(){
+    try {
+      setshowlist(!showlist)
+      setshlisterror(false)
+      const res=await fetch(`/api/user/listing/${currentUser._id}`,{
+        method:'GET'
+      })
+      const data=await res.json()
+      if(data.success===false){
+        setshlisterror(data.message)
+        return
+      }
+      setuserlisting(data)
+
+
+    } catch (error) {
+      setshlisterror("error in fetching")
+    }
+  }
+
+  async function handlelistdelete(listid){
+    try {
+      const res=await fetch(`/api/user/deletelisting/${listid}`,{
+        method:'DELETE',
+      })
+      const data=await res.json()
+      if(data.success ===false){
+        console.log(data.message)
+        return
+      }
+      setuserlisting((prev)=>userlisting.filter((listing)=>listing._id !== listid))
+    } catch (error) {
+      console.log(error.message)
+    }
+
+  }
   return (
     <div className="p-5 max-w-lg  mx-auto">
       <h1 className="text-center text-3xl sm:text-4xl font-semibold uppercase">
@@ -219,6 +258,18 @@ const Profile = () => {
       <p className="text-green-900 text-center">
         {updatestatus ? "user updated successfully" : ""}
       </p>
+      <button type="button" className="text-green-800 text-center mx-auto flex" onClick={handleShowlisting}>Show listings </button>
+      {showlist && userlisting.length >0 && userlisting.map((list)=>
+        <div className="flex justify-between items-center gap-3 my-2" key={list._id}>
+          <Link to={`/listing/${list._id}`}><img src={list.imageUrl[0]} className='w-20 h-20 object-contain' alt="listimage" srcset="" /></Link>
+          <p className="font-semibold">{list.name}</p>
+          <div className="flex flex-col">
+              <button type="button" onClick={()=>handlelistdelete(list._id)} className="text-red-700">DELETE</button>
+              <button type="button" className="text-green-700">EDIT</button>
+
+          </div>
+        </div>
+      ) }
       {/* <p>{DeleteUserfailure  ? 'user updated successfully' :''}</p> */}
     </div>
     // allow read;
