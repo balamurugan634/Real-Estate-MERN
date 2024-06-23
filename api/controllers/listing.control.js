@@ -45,3 +45,15 @@ export const updateList=async (req,res,next)=>{
         next(error)
     }
 }
+export const getlist=async (req,res,next)=>{
+    
+    try {
+        const listing=await Listing.findById(req.params.id)
+    if(!listing){return next(errorHandler(401,"listing not found"))}
+    // if(req.user.id !== listing.userRef){return next(errorHandler(401,"unauthorized"))}
+        res.status(200).json(listing)
+    } catch (error) {
+        next(error)
+    }
+
+}
