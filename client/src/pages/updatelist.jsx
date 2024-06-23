@@ -284,8 +284,6 @@ const Createlist = () => {
               />
               <p>Bath</p>
             </div>
-            {formdata.type === "sale" && (
-              <>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
@@ -319,8 +317,7 @@ const Createlist = () => {
                     <span className="text-sm">($/month)</span>
                   </div>
                 </div>}
-              </>
-            )}
+              
           </div>
         </div>
         <div className="flex flex-col p-2 gap-2 flex-1">
