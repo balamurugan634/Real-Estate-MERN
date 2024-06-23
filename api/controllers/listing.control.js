@@ -33,3 +33,15 @@ export const delListing=async (req,res,next)=>{
         next(error)
     }
 }
+export const updateList=async (req,res,next)=>{
+    const listing=await Listing.findById(req.params.id)
+    if(!listing){return next(errorHandler(401,"listing not found"))}
+    if(req.user.id !== listing.userRef){return next(errorHandler(401,"unauthorized"))}
+    try {
+        const updatedlist=await Listing.findByIdAndUpdate(req.params.id,req.body,{new:true})
+        res.status(200).json(updatedlist)
+
+    } catch (error) {
+        next(error)
+    }
+}
