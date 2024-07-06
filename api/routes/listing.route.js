@@ -1,8 +1,8 @@
 import express from 'express'
 import { verifytoken } from '../utils/verifyuser.js'
-import { createListing,showListing } from '../controllers/listing.control.js'
+import { createListing,searchList,showListing } from '../controllers/listing.control.js'
 const router=express.Router()
-
+router.get('/get',searchList)
 router.post('/createlisting',verifytoken,createListing)
 
 export default router
