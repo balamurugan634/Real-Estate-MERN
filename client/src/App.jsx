@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Createlist from "./pages/Createlist";
 import Updatelist from "./pages/updatelist";
 import Listing from "./pages/Listing";
+import Search from "./pages/Search";
 const App = () => {
   return (
     <BrowserRouter>
@@ -19,7 +20,7 @@ const App = () => {
         <Route path="/signin" element={<SignIn/>} />
         <Route  path="/signup" element={<SignUp/>}/>
         <Route path="/listing/:id" element={<Listing/>}></Route>
-
+        <Route path="/search" element={<Search/>}/>
         <Route element={<PrivateRoute/>}>
           <Route  path="/profile" element={<Profile/>}/>
           <Route path="/createlist" element={<Createlist/>}></Route>
