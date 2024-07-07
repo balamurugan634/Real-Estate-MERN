@@ -76,11 +76,11 @@ export const searchList = async (req, res, next) => {
       offers = { $in: [false,true] };
     }
     let furnished = req.query.furnished;
-    if (furnished === undefined || furnished === "false") {
+    if (furnished === undefined || furnished === "false" || furnished===false) {
       furnished = { $in: [false,true] };
     }
     let parking = req.query.parking;
-    if (parking === undefined || parking === "false") {
+    if (parking === undefined || parking === "false" ||parking===false) {
       parking = { $in: [false,true] };
     }
     let type = req.query.type;

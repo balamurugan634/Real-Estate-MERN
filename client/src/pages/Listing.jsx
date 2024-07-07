@@ -114,7 +114,7 @@ const Listing = () => {
               </p>
               {listing.offers && (
                 <p className="bg-green-900 rounded-md w-full max-w-[200px] text-white text-center p-1">
-                  ${+listing.regularprice - +listing.discountprice}
+                  ${+listing.regularprice - +listing.discountprice} discountprice
                 </p>
               )}
             </div>
