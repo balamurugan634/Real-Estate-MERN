@@ -6,6 +6,7 @@ const Search = () => {
     const navigate=useNavigate()
     const [loading,setLoading]=useState(false)
     const[listing,setListing]=useState([])
+    const [showmore,setShowmore]=useState(false)
     console.log(listing)
   const [searchval, setSearchval] = useState({
     searchkey: "",
@@ -92,6 +93,8 @@ const Search = () => {
             const res=await fetch(`/api/user/get?${searchquery}`)
 
             const data=await res.json()
+            console.log(data.length)
+            if(data.length > 6 ){setShowmore(true)}
             setListing(data)
             setLoading(false)
         }
@@ -100,6 +103,24 @@ const Search = () => {
    
   ,[location.search])
 //   console.log(searchval)
+// if(listing.length >8){
+//   setShowmore(true)
+// }
+async function  handleShowmore(){
+  const numberoflisting=listing.length
+  const params=new URLSearchParams(location.search)
+  const startindex=numberoflisting
+  params.set('startindex',startindex)
+  const searchquery=params.toString()
+  const res=await fetch(`/api/user/get?${searchquery}`)
+  const data=await res.json()
+  if(data.length <9){
+    setShowmore(false)
+  }else{
+    setShowmore(true)
+  }
+  setListing([...listing,...data])
+}
   return (
     <main className="flex flex-col md:flex-row">
       <div className="flex flex-col gap-5 p-5 border-b-2 md:border-r-2  md:min-h-screen">
@@ -183,7 +204,8 @@ const Search = () => {
             {listing.length > 0 && listing.map((list)=><Listitem key={list._id} listing={list}/>)}
 
         </div>
-      </div>
+{showmore &&        <button className=" text-green-700 w-full text-center hover:underline" onClick={()=>handleShowmore()}>show more</button>
+}      </div>
     </main>
   );
 };

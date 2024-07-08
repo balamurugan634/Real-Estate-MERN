@@ -69,7 +69,7 @@ export const getlist = async (req, res, next) => {
 };
 export const searchList = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 9;
+    const limit = parseInt(req.query.limit) || 8;
     const startIndex = parseInt(req.query.startindex) || 0;
     let offers = req.query.offer;
     if (offers === undefined || offers === "false") {
