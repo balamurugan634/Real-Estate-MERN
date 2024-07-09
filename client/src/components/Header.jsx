@@ -23,18 +23,19 @@ const Header = () => {
     }
   },[location.search])
   return (
-    <header className="bg-slate-200 text-sm sm:text-md shadow-md">
+    <header className="bg-slate-800 text-white text-sm sm:text-md shadow-md">
       <div className="flex justify-between items-center max-w-6xl p-2 sm:p-3 mx-auto flex-wrap">
         <h1>
-          <span className="text-slate-900 sm:text-xl">MR </span>
-          <span className="text-slate-600 sm:text-xl">Estate</span>
+          <span className=" sm:text-2xl">MR </span>
+          <span className="sm:text-2xl">Estate</span>
         </h1>
         <form onSubmit={handlesubmit} className="flex p-1 sm:p-2 max-w-xs sm:max-w-lg bg-slate-300 items-center rounded ">
           <input
             type="text"
-            className=" bg-transparent focus:outline-none hover:cursor-pointer"
+            className=" text-black bg-transparent focus:outline-none hover:cursor-pointer"
             name=""
             id=""
+
             value={searchkey}
             onChange={(e)=>setSearchkey(e.target.value)}
             placeholder="search"

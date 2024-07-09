@@ -164,7 +164,7 @@ const Profile = () => {
 
   }
   return (
-    <div className="p-5 max-w-lg  mx-auto">
+    <div className="p-5 max-w-lg  mx-auto ">
       <h1 className="text-center text-3xl sm:text-4xl font-semibold uppercase">
         Profile
       </h1>
