@@ -47,7 +47,7 @@ catch(error){
 }
 export const landlord=async (req,res,next)=>{
     try {
-        const user=await User.findById(req.params.id)
+        const user=await User.findById(req.params.id) 
         if(!user){
             return next(errorHandler(404,"user not found"))
         }
